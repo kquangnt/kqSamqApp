@@ -1,0 +1,99 @@
+<div>
+<% if logged_in? %>
+  <div class="row">
+    <aside class="col-md-4">
+      <section class="user_info">
+        <%= link_to gravatar_for(current_user, size: 50), current_user %>
+        <h1><%= current_user.name %></h1> 
+      </section>
+
+      <section class="stats">  
+        <% @user ||= current_user %>
+        <div class="stats">
+          <a href="<%= following_user_path(@user) %>">
+            <strong id="following" class="stat">
+              <%= @user.following.count %>
+            </strong>
+            following
+          </a>
+          <a href="<%= followers_user_path(@user) %>">
+            <strong id="followers" class="stat">
+              <%= @user.followers.count %>
+            </strong>
+            followers
+          </a>
+        </div>
+      </section>
+
+      <section class="micropost_form">
+        <%= form_for Comment.new do |f| %>
+          <%= render 'shared/error_messages', object: f.object %>
+          <%= f.hidden_field :micropost_id,value: @micropost.id %>
+          <%= f.hidden_field :user_id,value: @micropost.user.id %>
+          <div class="field">
+            <%= f.text_area :content, placeholder: "Write new comment..." %>
+          </div>
+          <%= f.submit "Submit", class: "btn btn-primary" %>
+        <% end %>
+      </section>
+    </aside>
+
+    <div class="col-md-8">
+      <h3><%= @micropost.title %></h3>
+
+      <%= @micropost.content %>
+    </div>
+
+    <div class="col-md-8"> 
+      <% if @micropost.comments.any? %>
+        <h3>Comments (<%= @micropost.comments.count %>)</h3>
+        <ol class="microposts">
+          <%= render @comments %>
+        </ol>
+      <% end %>
+    </div>
+
+<% else %>
+  <div class="row">
+    <aside class="col-md-4">
+      <section class="user_info">
+        <%= link_to gravatar_for(current_user, size: 50), current_user %>
+        <h1><%= current_user.name %></h1> 
+      </section>
+
+      <section class="stats">  
+        <% @user ||= current_user %>
+        <div class="stats">
+          <a href="<%= following_user_path(@user) %>">
+            <strong id="following" class="stat">
+              <%= @user.following.count %>
+            </strong>
+            following
+          </a>
+          <a href="<%= followers_user_path(@user) %>">
+            <strong id="followers" class="stat">
+              <%= @user.followers.count %>
+            </strong>
+            followers
+          </a>
+        </div>
+      </section>
+    </aside>
+
+    <div class="col-md-8">
+      <h3><%= @micropost.title %></h3>
+      <%= @micropost.content %>
+    </div>
+
+    <div class="col-md-8"> 
+      <% if @micropost.comments.any? %>
+        <h3>Comments (<%= @user.microposts.count %>)</h3>
+        <ol class="microposts">
+          <%= render @comments %>
+        </ol>
+      <% end %>
+    </div>
+
+  </div>
+<% end %>
+</div>
